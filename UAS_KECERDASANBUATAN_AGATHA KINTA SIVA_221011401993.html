@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Penilaian Kelayakan Kredit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sistem Penilaian Kelayakan Kredit</h1>
+    <label for="pendapatan">Pendapatan Bulanan:</label>
+    <input type="number" id="pendapatan" placeholder="Masukkan pendapatan"><br><br>
+
+    <label for="utang">Utang:</label>
+    <input type="number" id="utang" placeholder="Masukkan utang"><br><br>
+
+    <label for="riwayat_kredit">Riwayat Kredit (0-10):</label>
+    <input type="number" id="riwayat_kredit" placeholder="Masukkan riwayat kredit" min="0" max="10"><br><br>
+
+    <button onclick="hitungKelayakan()">Hitung Kelayakan</button>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        function fuzzyPendapatan(pendapatan) {
+            if (pendapatan < 3000) return 'rendah';
+            else if (pendapatan <= 7000) return 'sedang';
+            else return 'tinggi';
+        }
+
+        function fuzzyUtang(utang) {
+            if (utang < 2000) return 'rendah';
+            else if (utang <= 6000) return 'sedang';
+            else return 'tinggi';
+        }
+
+        function fuzzyRiwayatKredit(riwayat) {
+            if (riwayat < 3) return 'buruk';
+            else if (riwayat <= 7) return 'baik';
+            else return 'sangat_baik';
+        }
+
+        function hitungKelayakan() {
+            const pendapatan = parseInt(document.getElementById('pendapatan').value);
+            const utang = parseInt(document.getElementById('utang').value);
+            const riwayatKredit = parseInt(document.getElementById('riwayat_kredit').value);
+
+            const pendapatanFuzzy = fuzzyPendapatan(pendapatan);
+            const utangFuzzy = fuzzyUtang(utang);
+            const riwayatFuzzy = fuzzyRiwayatKredit(riwayatKredit);
+
+            let kelayakan;
+
+            // Aturan fuzzy
+            if (pendapatanFuzzy === 'rendah' && utangFuzzy === 'tinggi' && riwayatFuzzy === 'buruk') {
+                kelayakan = 'Tidak Layak';
+            } else if (pendapatanFuzzy === 'rendah' && utangFuzzy === 'sedang' && riwayatFuzzy === 'baik') {
+                kelayakan = 'Tidak Layak';
+            } else if (pendapatanFuzzy === 'sedang' && utangFuzzy === 'rendah' && riwayatFuzzy === 'baik') {
+                kelayakan = 'Layak';
+            } else if (pendapatanFuzzy === 'tinggi' && utangFuzzy === 'rendah' && riwayatFuzzy === 'sangat_baik') {
+                kelayakan = 'Sangat Layak';
+            } else {
+                kelayakan = 'Perlu Penilaian Lebih Lanjut';
+            }
+
+            document.getElementById('result').innerText = `Kelayakan Kredit: ${kelayakan}`;
+        }
+    </script>
+</body>
+</html>
